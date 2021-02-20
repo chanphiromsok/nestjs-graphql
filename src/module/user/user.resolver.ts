@@ -1,3 +1,4 @@
+import { User, UserDecorator } from './../../common/decorator/user.decorator';
 import { GQLAuthGuard } from './../auth/gql.guard';
 import { ResponseMsg } from './dto/res-msg';
 import { UserEntity } from './entities/user.entity';
@@ -24,7 +25,8 @@ export class UserResolver {
 
   @UseGuards(GQLAuthGuard)
   @Query(() => [UserEntity], { name: 'findAllUser' })
-  findAll() {
+  findAll(@User() user: UserEntity) {
+    console.log({ user });
     return this.userService.findAll();
   }
 
