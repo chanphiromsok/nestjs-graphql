@@ -9,6 +9,7 @@ import { GraphQLModule } from '@nestjs/graphql';
       debug: true,
       playground: true,
       fieldResolverEnhancers: ['interceptors'],
+      context: ({ req }) => ({ req }),
     }),
   ],
 })

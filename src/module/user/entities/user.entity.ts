@@ -1,7 +1,8 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
 
 @Entity({ name: 'user' })
+@Unique('userEntity', ['username'])
 @ObjectType()
 export class UserEntity {
   @Field(() => Int)
@@ -15,12 +16,4 @@ export class UserEntity {
   @Column()
   @Field()
   password: string;
-}
-
-@ObjectType()
-export class ResponseMsg {
-  @Field()
-  message: string;
-  @Field()
-  id: number;
 }

@@ -1,8 +1,12 @@
-import { UserEntity, ResponseMsg } from './entities/user.entity';
+import { GQLAuthGuard } from './../auth/gql.guard';
+import { ResponseMsg } from './dto/res-msg';
+import { UserEntity } from './entities/user.entity';
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { UserService } from './user.service';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
+import { RESToken } from './dto/res-token.dto';
+import { UseGuards } from '@nestjs/common';
 
 @Resolver(() => UserEntity)
 export class UserResolver {
@@ -10,10 +14,15 @@ export class UserResolver {
 
   @Mutation(() => UserEntity, { name: 'createUser' })
   create(@Args('createUserInput') createUserInput: CreateUserInput) {
-    console.log(createUserInput);
     return this.userService.create(createUserInput);
   }
 
+  @Mutation(() => RESToken)
+  userLogin(@Args('createUserInput') createUserInput: CreateUserInput) {
+    return this.userService.userLogin(createUserInput);
+  }
+
+  @UseGuards(GQLAuthGuard)
   @Query(() => [UserEntity], { name: 'findAllUser' })
   findAll() {
     return this.userService.findAll();
