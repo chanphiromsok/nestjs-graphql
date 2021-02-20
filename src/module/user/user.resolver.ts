@@ -2,7 +2,13 @@ import { User } from './../../common/decorator/user.decorator';
 import { GQLAuthGuard } from './../auth/gql.guard';
 import { ResponseMsg } from './dto/res-msg';
 import { UserEntity } from './entities/user.entity';
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Args,
+  ComplexityEstimatorArgs,
+} from '@nestjs/graphql';
 import { UserService } from './user.service';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
@@ -27,9 +33,15 @@ export class UserResolver {
   }
 
   @UseGuards(GQLAuthGuard)
-  @Query(() => [UserEntity], { name: 'findAllUser' })
+  @Query(() => [UserEntity], {
+    name: 'findAllUser',
+    complexity: (options: ComplexityEstimatorArgs) => {
+      return options.args.count * options.childComplexity;
+    },
+  })
   findAll(@User() user: UserEntity) {
     console.log(user);
+
     return this.userService.findAll();
   }
 

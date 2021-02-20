@@ -1,15 +1,23 @@
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { CreateSupplierInput } from './dto/create-supplier.input';
 import { UpdateSupplierInput } from './dto/update-supplier.input';
+import { SupplierEntity } from './entities/supplier.entity';
+import { from, Observable } from 'rxjs';
 
 @Injectable()
 export class SupplierService {
-  create(createSupplierInput: CreateSupplierInput) {
-    return 'This action adds a new supplier';
+  constructor(
+    @InjectRepository(SupplierEntity)
+    private readonly supplierRepo: Repository<SupplierEntity>,
+  ) {}
+  create(createSupplierInput: CreateSupplierInput): Observable<SupplierEntity> {
+    return from(this.supplierRepo.save(createSupplierInput));
   }
 
-  findAll() {
-    return `This action returns all supplier`;
+  findAll(): Observable<SupplierEntity[]> {
+    return from(this.supplierRepo.find({ relations: ['user'] }));
   }
 
   findOne(id: number) {

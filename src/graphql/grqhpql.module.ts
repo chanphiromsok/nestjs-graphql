@@ -1,5 +1,6 @@
+import { ComplexityPlugin } from './../common/gql-complexity/gql.plugin';
 import { Module } from '@nestjs/common';
-import { GraphQLModule } from '@nestjs/graphql';
+import { GraphQLModule, GraphQLSchemaHost } from '@nestjs/graphql';
 
 @Module({
   imports: [
@@ -11,6 +12,8 @@ import { GraphQLModule } from '@nestjs/graphql';
       fieldResolverEnhancers: ['interceptors'],
       context: ({ req }) => ({ req }),
     }),
+    GraphQLSchemaHost,
   ],
+  providers: [ComplexityPlugin],
 })
 export class GrqhpqlModule {}
