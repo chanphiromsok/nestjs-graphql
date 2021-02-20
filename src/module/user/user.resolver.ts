@@ -1,4 +1,4 @@
-import { User, UserDecorator } from './../../common/decorator/user.decorator';
+import { User } from './../../common/decorator/user.decorator';
 import { GQLAuthGuard } from './../auth/gql.guard';
 import { ResponseMsg } from './dto/res-msg';
 import { UserEntity } from './entities/user.entity';
@@ -7,7 +7,7 @@ import { UserService } from './user.service';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { RESToken } from './dto/res-token.dto';
-import { UseGuards } from '@nestjs/common';
+import { UseGuards, ValidationPipe } from '@nestjs/common';
 
 @Resolver(() => UserEntity)
 export class UserResolver {
@@ -19,14 +19,17 @@ export class UserResolver {
   }
 
   @Mutation(() => RESToken)
-  userLogin(@Args('createUserInput') createUserInput: CreateUserInput) {
+  userLogin(
+    @Args('createUserInput', new ValidationPipe())
+    createUserInput: CreateUserInput,
+  ) {
     return this.userService.userLogin(createUserInput);
   }
 
   @UseGuards(GQLAuthGuard)
   @Query(() => [UserEntity], { name: 'findAllUser' })
   findAll(@User() user: UserEntity) {
-    console.log({ user });
+    console.log(user);
     return this.userService.findAll();
   }
 

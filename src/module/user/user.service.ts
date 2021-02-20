@@ -32,15 +32,16 @@ export class UserService {
     );
   }
 
-  userLogin(user: CreateUserInput): Observable<RESToken> {
-    return this.findUsername(user.username).pipe(
-      switchMap(({ password }) => {
+  userLogin({ username, password }: CreateUserInput): Observable<RESToken> {
+    return this.findUsername(username).pipe(
+      switchMap((user) => {
         return from(
-          this.authService.comparePassword(user.password, password),
+          this.authService.comparePassword(password, user.password),
         ).pipe(
           switchMap(() => {
+            delete user.password;
             return this.authService
-              .generateJWT(user)
+              .generateJWT({ ...user })
               .pipe(map((token) => ({ token })));
           }),
         );
